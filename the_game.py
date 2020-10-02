@@ -19,13 +19,23 @@ POISON = coloring('x', 'r')
 FOOD = coloring('o', 'g')
 
 field = [[choice([DEAD, ALIVE]) for x in range(SIZE_X)] for y in range(SIZE_Y)]
+'''field = [[DEAD for x in range(SIZE_X)] for y in range(SIZE_Y)]
+
+for x in range(SIZE_X):
+    for y in range(SIZE_Y):
+        if x == 4 and y == 30 \
+            or x == 5 and y == 30 \
+            or x == 6 and y == 30 \
+            or x == 6 and y == 29 \
+            or x == 5 and y == 28:
+                field[y][x] = ALIVE'''
 
 
 def get_poison_and_food(field, prob):
     for x in range(SIZE_X):
         for y in range(SIZE_Y):
-            field[y][x] = POISON if random() > prob and field[y][x] == DEAD else field[y][x]
-            field[y][x] = FOOD if random() > prob and field[y][x] == DEAD else field[y][x]
+            field[y][x] = POISON if random() < prob and field[y][x] == DEAD else field[y][x]
+            field[y][x] = FOOD if random() < prob and field[y][x] == DEAD else field[y][x]
 
 
 def scanner(x, y):
@@ -40,7 +50,20 @@ def scanner(x, y):
             (-1, 1)
 
     ):
-        yield x + dx, y + dy
+        if x + dx == -1:
+            scan_x = SIZE_X - x + dx
+        elif x + dx == SIZE_X:
+            scan_x = SIZE_X - (x + dx)
+        else:
+            scan_x = x + dx
+
+        if y + dy == -1:
+            scan_y = SIZE_Y - y + dy
+        elif y + dy == SIZE_Y:
+            scan_y = SIZE_Y - (y + dy)
+        else:
+            scan_y = y + dy
+        yield scan_x, scan_y
 
 
 def get_field(field):
@@ -72,7 +95,7 @@ def is_food(field, neighbor_x, neighbor_y):
 
 generation = 0
 while True:
-    get_poison_and_food(field, .9999)
+    get_poison_and_food(field, .0001)
     print(f'Generation: {generation}')
     get_field(field)
     buffer = get_empty_field(field)
@@ -101,7 +124,7 @@ while True:
                 buffer[y][x] = FOOD if random() > .1 else DEAD
 
     if field == buffer:
-        print('\nterminal state')
+        print('terminal state')
         break
     field = buffer
     generation += 1
