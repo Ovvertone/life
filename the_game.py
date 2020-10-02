@@ -21,7 +21,7 @@ FOOD = coloring('o', 'g')
 field = [[choice([DEAD, ALIVE]) for x in range(SIZE_X)] for y in range(SIZE_Y)]
 
 
-def get_poison_and_food(prob):
+def get_poison_and_food(field, prob):
     for x in range(SIZE_X):
         for y in range(SIZE_Y):
             field[y][x] = POISON if random() > prob and field[y][x] == DEAD else field[y][x]
@@ -72,7 +72,7 @@ def is_food(field, neighbor_x, neighbor_y):
 
 generation = 0
 while True:
-    get_poison_and_food(.9999)
+    get_poison_and_food(field, .9999)
     print(f'Generation: {generation}')
     get_field(field)
     buffer = get_empty_field(field)
@@ -87,7 +87,7 @@ while True:
                     buffer[neighbor_y][neighbor_x] = ALIVE
                 if is_poison(field, neighbor_x, neighbor_y) and cell == ALIVE:
                     cell = DEAD
-                    buffer[neighbor_y][neighbor_x] = DEAD
+                    buffer[neighbor_y][neighbor_x] = FOOD
                 neighbors += 1 if is_alive(field, neighbor_x, neighbor_y) else 0
 
             if cell == DEAD:
@@ -96,9 +96,9 @@ while True:
                 buffer[y][x] = ALIVE if neighbors in (2, 3) else DEAD
 
             if field[y][x] == POISON:
-                buffer[y][x] = POISON
+                buffer[y][x] = POISON if random() > .1 else DEAD
             if field[y][x] == FOOD:
-                buffer[y][x] = FOOD
+                buffer[y][x] = FOOD if random() > .1 else DEAD
 
     if field == buffer:
         print('\nterminal state')
