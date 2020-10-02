@@ -11,7 +11,7 @@ def coloring(text, color):
         return text
 
 
-SIZE_X = 210
+SIZE_X = 190
 SIZE_Y = 50
 DEAD = ' '
 ALIVE = coloring('*', 'c')
@@ -19,16 +19,6 @@ POISON = coloring('x', 'r')
 FOOD = coloring('o', 'g')
 
 field = [[choice([DEAD, ALIVE]) for x in range(SIZE_X)] for y in range(SIZE_Y)]
-'''field = [[DEAD for x in range(SIZE_X)] for y in range(SIZE_Y)]
-
-for x in range(SIZE_X):
-    for y in range(SIZE_Y):
-        if x == 4 and y == 30 \
-            or x == 5 and y == 30 \
-            or x == 6 and y == 30 \
-            or x == 6 and y == 29 \
-            or x == 5 and y == 28:
-                field[y][x] = ALIVE'''
 
 
 def get_poison_and_food(field, prob):
