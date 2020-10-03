@@ -1,6 +1,8 @@
 from random import choice, random
 from colorama import Fore, Style
+import matplotlib.pyplot as plt
 from os import system, name
+from numpy import round
 
 
 def coloring(text, color):
@@ -18,7 +20,7 @@ ALIVE = coloring('*', 'c')
 POISON = coloring('x', 'r')
 FOOD = coloring('o', 'g')
 
-field = [[choice([DEAD, ALIVE]) for x in range(SIZE_X)] for y in range(SIZE_Y)]
+field = [[choice([ALIVE, DEAD]) for x in range(SIZE_X)] for y in range(SIZE_Y)]
 
 
 def get_poison_and_food(field, prob):
@@ -83,16 +85,20 @@ def is_food(field, neighbor_x, neighbor_y):
            and field[neighbor_y][neighbor_x] == FOOD
 
 
-generation = 0
+alive_list = []
+generation_list = []
+generation = 1
 while True:
-    get_poison_and_food(field, .0001)
+    alive_count = 0
     print(f'Generation: {generation}')
+    get_poison_and_food(field, .0001)
     get_field(field)
     buffer = get_empty_field(field)
 
     for y in range(SIZE_Y):
         for x in range(SIZE_X):
             cell = field[y][x]
+            alive_count += 1 if cell == ALIVE else 0
             neighbors = 0
 
             for neighbor_x, neighbor_y in scanner(x, y):
@@ -109,14 +115,27 @@ while True:
                 buffer[y][x] = ALIVE if neighbors in (2, 3) else DEAD
 
             if field[y][x] == POISON:
-                buffer[y][x] = POISON if random() > .1 else DEAD
+                buffer[y][x] = POISON if random() > .05 else DEAD
             if field[y][x] == FOOD:
-                buffer[y][x] = FOOD if random() > .1 else DEAD
+                buffer[y][x] = FOOD if random() > .05 else DEAD
 
-    if field == buffer:
+    if field == buffer or generation == 500:
         print('terminal state')
         break
     field = buffer
+
     generation += 1
+    generation_list.append(generation)
+    alive_list.append(alive_count)
 
     system('clear' if name != 'nt' else 'cls')
+
+fig, ax = plt.subplots()
+plt.title('Diagram of alive cells count')
+ax.plot(generation_list, [round((i / (SIZE_X * SIZE_Y)) * 100, 2) for i in alive_list], 'g')
+ax.set_xlabel('Generation')
+ax.set_ylabel('Count of alive cells (%)')
+ax.grid()
+fig.set_figwidth(18)
+fig.set_figheight(9)
+plt.show()
