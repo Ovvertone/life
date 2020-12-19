@@ -69,22 +69,11 @@ def get_empty_field(field: list) -> list:
     return [[DEAD for x in range(SIZE_X)] for y in range(SIZE_Y)]
 
 
-def is_alive(field: list, neighbor_x: int, neighbor_y: int) -> bool:
+def check_cell(field: list, neighbor_x: int, neighbor_y: int, cell_type: str) -> bool:
+    cell_types = {'alive': ALIVE, 'poison': POISON, 'food': FOOD}
     return 0 <= neighbor_x < SIZE_X \
            and 0 <= neighbor_y < SIZE_Y \
-           and field[neighbor_y][neighbor_x] == ALIVE
-
-
-def is_poison(field: list, neighbor_x: int, neighbor_y: int) -> bool:
-    return 0 <= neighbor_x < SIZE_X \
-           and 0 <= neighbor_y < SIZE_Y \
-           and field[neighbor_y][neighbor_x] == POISON
-
-
-def is_food(field: list, neighbor_x: int, neighbor_y: int) -> bool:
-    return 0 <= neighbor_x < SIZE_X \
-           and 0 <= neighbor_y < SIZE_Y \
-           and field[neighbor_y][neighbor_x] == FOOD
+           and field[neighbor_y][neighbor_x] == cell_types[cell_type]
 
 
 alive_list, generation_list, food_list, poison_list = [], [], [], []
@@ -105,12 +94,12 @@ while True:
             neighbors = 0
 
             for neighbor_x, neighbor_y in scanner(x, y):
-                if is_food(field, neighbor_x, neighbor_y) and cell == ALIVE:
+                if check_cell(field, neighbor_x, neighbor_y, 'food') and cell == ALIVE:
                     buffer[neighbor_y][neighbor_x] = ALIVE
-                if is_poison(field, neighbor_x, neighbor_y) and cell == ALIVE:
+                if check_cell(field, neighbor_x, neighbor_y, 'poison') and cell == ALIVE:
                     cell = DEAD
                     buffer[neighbor_y][neighbor_x] = FOOD
-                neighbors += 1 if is_alive(field, neighbor_x, neighbor_y) else 0
+                neighbors += 1 if check_cell(field, neighbor_x, neighbor_y, 'alive') else 0
 
             if cell == DEAD:
                 buffer[y][x] = ALIVE if neighbors == 3 else DEAD
