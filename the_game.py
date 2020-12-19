@@ -41,8 +41,8 @@ def scanner(x: int, y: int) -> (int, int):
             (-1, -1),
             (-1, 0),
             (-1, 1)
-
     ):
+
         if x + dx == -1:
             scan_x = SIZE_X - x + dx
         elif x + dx == SIZE_X:
@@ -56,6 +56,7 @@ def scanner(x: int, y: int) -> (int, int):
             scan_y = SIZE_Y - (y + dy)
         else:
             scan_y = y + dy
+
         yield scan_x, scan_y
 
 
