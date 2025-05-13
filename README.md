@@ -1,2 +1,2 @@
 # life
-## My version of Game of Life with some features
+## My version of The Game of Life with some features
